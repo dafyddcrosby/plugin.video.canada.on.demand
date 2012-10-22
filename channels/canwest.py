@@ -1,9 +1,4 @@
 from theplatform import *
-try:
-    from pyamf import remoting
-    has_pyamf = True
-except ImportError:
-    has_pyamf = False
 
 
 class CanwestBaseChannel(ThePlatformBaseChannel):

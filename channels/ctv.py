@@ -1,17 +1,5 @@
 from theplatform import *
-
-try:
-    from pyamf import remoting
-    has_pyamf = True
-except ImportError:
-    has_pyamf = False
-
-try:
-    from sqlite3 import dbapi2 as sqlite
-
-except:
-    from pysqlite2 import dbapi2 as sqlite
-
+import xbmc
 
 class CTVBaseChannel(BaseChannel):
     status = STATUS_GOOD
@@ -94,7 +82,6 @@ class CTVBaseChannel(BaseChannel):
             SORT_METHOD_DATE, xbmcplugin.SORT_METHOD_LABEL])
 
     def action_play_episode(self):
-        import xbmc
         vidcount = self.args.get('videocount')
         if vidcount:
             vidcount = int(vidcount)

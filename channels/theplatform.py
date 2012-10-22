@@ -1,17 +1,10 @@
 import time
-import cgi
-import datetime
 import simplejson
 from channel import BaseChannel, ChannelException, ChannelMetaClass, STATUS_BAD, STATUS_GOOD, STATUS_UGLY
 from utils import *
 import httplib
 import xbmcplugin
 import xbmc
-try:
-    from pyamf import remoting
-    has_pyamf = True
-except ImportError:
-    has_pyamf = False
 
 
 class ThePlatformBaseChannel(BaseChannel):
