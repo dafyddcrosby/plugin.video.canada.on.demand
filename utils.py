@@ -1,6 +1,7 @@
 import os
 import cgi
-import urllib, urllib2
+import urllib
+import urllib2
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 import re
 
@@ -9,8 +10,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 from htmlentitydefs import name2codepoint as n2cp
 
+
 class CTVException(Exception):
     pass
+
 
 class ParseException(Exception):
     pass
@@ -20,110 +23,112 @@ class URLParser(object):
     """
     Unused, incomplete replacement for transform_stream_url
     """
-    
+
     url_re = re.compile(r"(?P<scheme>\w+)://(?P<netloc>[\w\d\-\.]+)/(?P<app>\w+)/(?P<playpath>[^\?]+)(?:\?(?P<querystring>.*))?")
-    
-    def __init__(self, swf_url=None, swf_verify=False, \
+
+    def __init__(self, swf_url=None, swf_verify=False,
                  playpath_qs=True, is_live=False):
 
         self.swf_url = swf_url
         self.swf_verify = swf_verify
-        self.playpath_qs=playpath_qs
+        self.playpath_qs = playpath_qs
         self.is_live = is_live
-        
+
     def __call__(self, url):
         self.input_url = url
         self.parse()
         self.clean()
         self.generate_url()
         return self.output_url
-    
+
     def parse(self):
         match = self.url_re.match(self.input_url)
         if not match:
-            raise ParseException("Couldn't parse input url: %s" % (self.input_url, ))        
-        self.data = match.groupdict()    
-        
+            raise ParseException(
+                "Couldn't parse input url: %s" % (self.input_url, ))
+        self.data = match.groupdict()
+
     def clean_scheme(self, scheme):
         return scheme
-        
+
     def clean_app(self, app):
         if hasattr(self, 'additional_app'):
             app = app + "/" + self.additional_app
-            
+
         if 'live' in app:
             self.is_live = True
         return app
-    
+
     def clean_playpath(self, playpath):
         if "&mp4" in playpath:
             app, pp = playpath.split("&mp4")
             playpath = 'mp4' + pp
             self.additional_app = app
-            
+
         if playpath.startswith("&"):
             playpath = playpath[1:]
         basename, extension = os.path.splitext(playpath)
-        
-        if extension.lower() in ('.flv',''):
+
+        if extension.lower() in ('.flv', ''):
             playpath = basename
         else:
             if ':' in basename:
                 playpath = "%s%s" % (basename, extension)
             else:
                 playpath = "%s:%s%s" % (extension[1:], basename, extension)
-            
+
         if self.playpath_qs and self.data['querystring']:
             playpath += "?%(querystring)s" % self.data
-            
+
         return playpath
-    
-    def clean(self):        
+
+    def clean(self):
         for key in ('querystring', 'playpath', 'scheme', 'netloc', 'app'):
             cleanfunc = getattr(self, 'clean_%s' % (key,), lambda v: v)
-            self.data[key] = cleanfunc(self.data[key])            
-        
+            self.data[key] = cleanfunc(self.data[key])
+
     def get_base_url(self):
         print self.data
         url = "%(scheme)s://%(netloc)s/%(app)s?ovpfv=2.1.4" % self.data
         if self.data['querystring']:
             url += "&%(querystring)s" % self.data
         return url
-    
+
     def get_url_params(self):
-        params = [('playpath', self.data['playpath']),]
-        
+        params = [('playpath', self.data['playpath']), ]
+
         if self.swf_url:
             params.append(('swfurl', self.swf_url))
-        
+
         if self.swf_verify:
-            params.append(('swfvfy','true'))
+            params.append(('swfvfy', 'true'))
 
         if self.is_live:
-            params.append(('live','true'))
-            
+            params.append(('live', 'true'))
+
         return params
-        
-    
+
     def generate_url(self):
         base_url = self.get_base_url()
         if not self.data['scheme'].startswith("rtmp"):
             self.output_url = self.input_url
             return
-        
+
         params = self.get_url_params()
         if params:
             base_url += " %s" % (" ".join(["%s=%s" % item for item in params]))
         self.output_url = base_url
-        
+
+
 class TestParser(URLParser):
     def clean_netloc(self, netloc):
         if 'edgefcs.net' in netloc:
             return 'r11111.edgefcs.net'
         return netloc
-    
+
+
 def transform_stream_url(url, swf_url=None, playpath_qs=True):
-    logging.debug("ORIGINAL URL: %s"%(url,))
+    logging.debug("ORIGINAL URL: %s" % (url,))
     if swf_url:
         swf_url = 'swfurl=%s swfvfy=true' % (swf_url,)
     else:
@@ -132,16 +137,15 @@ def transform_stream_url(url, swf_url=None, playpath_qs=True):
     match = re.match(r"rtmp(?P<rtmpe>e?)://(?P<netloc>[\w\d\.]+)/(?P<live_od>(?:\w+))/(?P<path>[^\?]+)(?:\?(?P<querystring>.*))?", url)
     parts = dict(match.groupdict())
     if "." in parts['path']:
-        parts['extension'] = parts['path'].rsplit(".",1)[-1].lower()
+        parts['extension'] = parts['path'].rsplit(".", 1)[-1].lower()
     else:
         parts['extension'] = ''
 
-    parts['path'] = parts['path'].rsplit(".",1)[0]
+    parts['path'] = parts['path'].rsplit(".", 1)[0]
     parts['swfurl'] = swf_url
     parts['amp'] = '&'
     parts['q'] = '?'
 
-        
     if 'querystring' not in parts or not parts['querystring']:
         parts['querystring'] = ''
         parts['amp'] = ''
@@ -154,7 +158,6 @@ def transform_stream_url(url, swf_url=None, playpath_qs=True):
             res = "rtmp%(rtmpe)s://%(netloc)s/%(live_od)s/?ovpfv=2.1.4%(amp)s%(querystring)s playpath=%(path)s%(q)s%(querystring)s %(swfurl)s" % parts
         else:
             res = "rtmp%(rtmpe)s://%(netloc)s/%(live_od)s/?ovpfv=2.1.4%(amp)s%(querystring)s playpath=%(path)s %(swfurl)s" % parts
-
 
     if parts['live_od'] == 'live':
         res += " live=true"
@@ -174,17 +177,18 @@ def dequote(s):
                 return float(s)
             except:
                 return s
-        
-    
+
+
 def parse_javascript_object(objs):
     PATTERN = re.compile(r'''((?:[^,"']|"[^"]*"|'[^']*')+)''')
-    pairs = [p.strip().split(":", 1) for p in PATTERN.split(objs) if p.strip() and p.strip() != ',']
+    pairs = [p.strip().split(":", 1) for p in PATTERN.split(objs) if p.
+             strip() and p.strip() != ',']
     return dict([(k, dequote(v)) for k, v in pairs])
-    
+
 
 def qasplit(chars, sep=",", quote="'"):
-    """ 
-    Quote aware split 
+    """
+    Quote aware split
     """
     if sep == quote:
         raise Exception("sep and quote cannot be the same character")
@@ -204,7 +208,8 @@ def qasplit(chars, sep=",", quote="'"):
 
     splitpoints.append(len(chars))
 
-    slices = [chars[splitpoints[i]+1:splitpoints[i+1]] for i in range(len(splitpoints)-1)]
+    slices = [chars[splitpoints[i] + 1:splitpoints[i + 1]]
+              for i in range(len(splitpoints) - 1)]
     return slices
 
 
@@ -213,18 +218,18 @@ def parse_bad_json(json):
     This is currently only used by CTV, it parses Javascript objects
     written in javascript (but not valid json):
     for example: "{IsTrue: true, myName: "Something", otherKey: null}"
-    
+
     """
     pairs = qasplit(json.lstrip(" {").rstrip("} "))
     data = {}
     for pair in pairs:
-        key, value = [t.strip() for t in pair.split(":",1)]
+        key, value = [t.strip() for t in pair.split(":", 1)]
         if value.isdigit():
             value = int(value)
         elif "." in value:
             try:
                 value = float(value)
-            except (ValueError,TypeError):
+            except (ValueError, TypeError):
                 pass
 
         elif value.startswith("'") and value.endswith("'"):
@@ -245,12 +250,10 @@ def parse_bad_json(json):
     return data
 
 
-
-
 def substitute_entity(match):
     """
     used by decode_htmlentities.
-    
+
     """
     ent = match.group(2)
     if match.group(1) == "#":
@@ -268,7 +271,7 @@ def decode_htmlentities(string):
     """
     replace &quot; &amp; and all other
     html entity codes.
-    
+
     """
     entity_re = re.compile("&(#?)(\d{1,5}|\w{1,8});")
     return entity_re.subn(substitute_entity, string)[0]
@@ -277,42 +280,44 @@ def decode_htmlentities(string):
 def get_page(url, retry_limit=4):
     """
     fetch a url, damnit.
-    
+
     """
-    raise Exception("DEPRECATED get_page call to %s" %(url,))
+    raise Exception("DEPRECATED get_page call to %s" % (url,))
 
 
 def get_soup(url, *args, **kwargs):
     return BeautifulSoup(get_page(url, *args, **kwargs))
+
 
 def get_stone_soup(url):
     return BeautifulStoneSoup(get_page(url))
 
 
 def urlquoteval(string):
-    """ 
+    """
     encodes a querystring (or portion) (mostly space to %20)
     """
     return urllib.quote(string)
 
+
 def urldecode(query):
     """
     parses querystrings
-    
+
     """
     d = {}
     a = query.split('&')
     for s in a:
         if s.find('='):
-            k,v = map(urllib.unquote_plus, s.split('='))
+            k, v = map(urllib.unquote_plus, s.split('='))
             if v == 'None':
                 v = None
             d[k] = v
     return d
+
 
 def get_classes(element):
     """
     pull a list of all the css classes on a beautifulsoup element.
     """
     return re.split(r'\s+', element['class'])
-
