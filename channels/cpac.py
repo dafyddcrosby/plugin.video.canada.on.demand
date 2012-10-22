@@ -1,10 +1,6 @@
-import time
-import cgi
-import datetime
 import simplejson
 from channel import BaseChannel, ChannelException, ChannelMetaClass, STATUS_BAD, STATUS_GOOD, STATUS_UGLY
 from utils import *
-import httplib
 import xbmcplugin
 import xbmc
 from channel import *

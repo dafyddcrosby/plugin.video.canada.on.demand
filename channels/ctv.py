@@ -1,4 +1,5 @@
 from theplatform import *
+from channel import STATUS_GOOD
 import xbmc
 
 class CTVBaseChannel(BaseChannel):
@@ -340,96 +341,8 @@ class CTVLocalNews(CTVNews):
         self.plugin.end_list()
 
 
-class Bravo(CTVBaseChannel):
-    short_name = 'bravo'
-    long_name = 'Bravo!'
-
-    def action_root(self):
-        url = 'http://www.bravo.ca/shows'
-        soup = BeautifulSoup(
-            self.plugin.fetch(url, max_age=self.cache_timeout))
-        shows = soup.find('div', 'shows_list').findAll('a', 'link')
-        for show in shows:
-            show_img = 'http://www.bravo.ca' + show.findPrevious('img')['src']
-            show_url = 'http://www.bravo.ca' + show['href']
-            # must check url to see if there are any videos
-            soup2 = BeautifulSoup(
-                self.plugin.fetch(show_url, max_age=self.cache_timeout))
-            if not soup2.find('a', 'video_carousel_thumbnail_container'):
-                continue
-            # there are videos, so add to the list
-            self.plugin.add_list_item({
-                'Title': show.contents[0],
-                'Thumb': show_img,
-                'action': 'browse',
-                'channel': self.short_name,
-                'show_url': show_url
-            })
-        self.plugin.end_list()
-
-    def action_browse(self):
-        soup = BeautifulSoup(self.plugin.fetch(self.args[
-            'show_url'], max_age=self.cache_timeout))
-        episodes = soup.findAll('a', 'video_carousel_thumbnail_container')
-        for ep in episodes:
-            ep_img = ep.find('img')['src']
-            ep_title = ep.find('span').contents[0]
-            ep_id = ep['href'].split('=')[1]
-            self.plugin.add_list_item({
-                'Title': ep_title,
-                'Thumb': ep_img,
-                'action': 'browse_episode',
-                'channel': self.short_name,
-                'episode_id': ep_id
-            })
-        self.plugin.end_list()
-
-
 class CTV(CTVBaseChannel):
     short_name = 'ctv'
     long_name = 'CTV'
     base_url = 'http://watch.ctv.ca/AJAX/'
     swf_url = 'http://watch.ctv.ca/Flash/player.swf?themeURL=http://watch.ctv.ca/themes/CTV/player/theme.aspx'
-
-
-class TSN(CTVBaseChannel):
-    short_name = 'tsn'
-    long_name = 'The Sports Network'
-    base_url = 'http://watch.tsn.ca/AJAX/'
-    swf_url = 'http://watch.tsn.ca/Flash/player.swf?themeURL=http://watch.ctv.ca/themes/TSN/player/theme.aspx'
-
-
-class Discovery(CTVBaseChannel):
-    short_name = 'discovery'
-    base_url = 'http://watch.discoverychannel.ca/AJAX/'
-    long_name = 'Discovery'
-    swf_url = 'http://watch.discoverychannel.ca/Flash/player.swf?themeURL=http://watch.discoverychannel.ca/themes/Discoverynew/player/theme.aspx'
-
-
-class ComedyNetwork(CTVBaseChannel):
-    status = STATUS_UGLY
-    short_name = 'comedynetwork'
-    base_url = 'http://watch.thecomedynetwork.ca/AJAX/'
-    long_name = 'The Comedy Network'
-    swf_url = 'http://watch.thecomedynetwork.ca/Flash/player.swf?themeURL=http://watch.thecomedynetwork.ca/themes/Comedy/player/theme.aspx'
-
-
-class Space(CTVBaseChannel):
-    short_name = 'space'
-    long_name = "Space"
-    base_url = "http://watch.spacecast.com/AJAX/"
-    swf_url = "http://watch.spacecast.com/Flash/player.swf?themeURL=http://watch.spacecast.com/themes/Space/player/theme.aspx"
-
-
-class BNN(CTVBaseChannel):
-    base_url = 'http://watch.bnn.ca/AJAX/'
-    long_name = 'Business News Network'
-    short_name = 'bnn'
-    swf_url = 'http://watch.bnn.ca/news/Flash/player.swf?themeURL=http://watch.bnn.ca/themes/BusinessNews/player/theme.aspx'
-
-
-class Fashion(CTVBaseChannel):
-    short_name = 'fashion'
-    base_url = 'http://watch.fashiontelevision.com/AJAX/'
-    long_name = 'Fashion Television'
-    swf_url = 'http://watch.fashiontelevision.com/Flash/player.swf?themeURL=http://watch.fashiontelevision.com/themes/FashionTelevision/player/theme.aspx'
