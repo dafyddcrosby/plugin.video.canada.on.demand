@@ -1,6 +1,6 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 
-class BNN(CTVBaseChannel):
+class BNN(BellMediaBaseChannel):
     base_url = 'http://watch.bnn.ca/AJAX/'
     long_name = 'Business News Network'
     short_name = 'bnn'

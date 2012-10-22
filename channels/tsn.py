@@ -1,6 +1,6 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 
-class TSN(CTVBaseChannel):
+class TSN(BellMediaBaseChannel):
     short_name = 'tsn'
     long_name = 'The Sports Network'
     base_url = 'http://watch.tsn.ca/AJAX/'

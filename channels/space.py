@@ -1,6 +1,6 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 
-class Space(CTVBaseChannel):
+class Space(BellMediaBaseChannel):
     short_name = 'space'
     long_name = "Space"
     base_url = "http://watch.spacecast.com/AJAX/"

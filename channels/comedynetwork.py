@@ -1,7 +1,7 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 from channel import STATUS_UGLY
 
-class ComedyNetwork(CTVBaseChannel):
+class ComedyNetwork(BellMediaBaseChannel):
     status = STATUS_UGLY
     short_name = 'comedynetwork'
     long_name = 'The Comedy Network'

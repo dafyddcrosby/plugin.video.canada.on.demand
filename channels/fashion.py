@@ -1,6 +1,6 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 
-class Fashion(CTVBaseChannel):
+class Fashion(BellMediaBaseChannel):
     short_name = 'fashion'
     long_name = 'Fashion Television'
 

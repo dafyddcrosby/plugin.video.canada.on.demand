@@ -1,6 +1,6 @@
-from ctv import CTVBaseChannel
+from ctv import BellMediaBaseChannel
 
-class Bravo(CTVBaseChannel):
+class Bravo(BellMediaBaseChannel):
     short_name = 'bravo'
     long_name = 'Bravo!'
 

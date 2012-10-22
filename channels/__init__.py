@@ -5,6 +5,8 @@ channels = [
     'comedynetwork',
     'cpac',
     'ctv',
+    'ctvlocal',
+    'ctvnews',
     'discovery',
     'diynet',
     'fashion',
@@ -22,6 +24,7 @@ channels = [
     'tvtropolis',
 ]
 helpers = [
+    'bellmedia',
     'brightcove',
     'canwest',
     'theplatfom',
