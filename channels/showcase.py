@@ -1,4 +1,4 @@
-from canwest import CanwestBaseChannel
+from canwest import *
 
 class Showcase(CanwestBaseChannel):
     short_name = 'showcase'
