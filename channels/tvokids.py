@@ -1,5 +1,4 @@
-import httplib
-from brightcove import BrightcoveBaseChannel
+from brightcove import *
 
 class TVOKids(BrightcoveBaseChannel):
     short_name = 'tvokids'
