@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from ctvnews import *
 
 class CTVLocalNews(CTVNews):
     short_name = 'ctvlocal'
