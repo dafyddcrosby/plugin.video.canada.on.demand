@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from bellmedia import *
 
 class Discovery(BellMediaBaseChannel):
     short_name = 'discovery'
