@@ -1,4 +1,4 @@
-from canwest import CanwestBaseChannel
+from canwest import *
 
 class FoodNetwork(CanwestBaseChannel):
     short_name = 'foodnet'
