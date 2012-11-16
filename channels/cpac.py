@@ -1,9 +1,4 @@
-import simplejson
-from channel import BaseChannel, ChannelException, ChannelMetaClass, STATUS_BAD, STATUS_GOOD, STATUS_UGLY
-from utils import *
-import xbmcplugin
-import xbmc
-from channel import *
+from theplatform import *
 
 
 class CPAC(BaseChannel):
