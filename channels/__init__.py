@@ -27,7 +27,7 @@ helpers = [
     'bellmedia',
     'brightcove',
     'canwest',
-    'theplatfom',
+    'theplatform',
 ]
 
 __all__ = helpers + channels
