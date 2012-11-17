@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from bellmedia import *
 
 class Space(BellMediaBaseChannel):
     short_name = 'space'

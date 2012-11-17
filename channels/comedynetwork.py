@@ -1,5 +1,4 @@
-from ctv import BellMediaBaseChannel
-from channel import STATUS_UGLY
+from bellmedia import *
 
 class ComedyNetwork(BellMediaBaseChannel):
     status = STATUS_UGLY

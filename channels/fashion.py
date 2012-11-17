@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from bellmedia import *
 
 class Fashion(BellMediaBaseChannel):
     short_name = 'fashion'

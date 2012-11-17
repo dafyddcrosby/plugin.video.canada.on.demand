@@ -1,5 +1,4 @@
-from theplatform import ThePlatformBaseChannel
-from channel import STATUS_UGLY
+from theplatform import *
 
 class CBCChannel(ThePlatformBaseChannel):
     PID = "_DyE_l_gC9yXF9BvDQ4XNfcCVLS4PQij"

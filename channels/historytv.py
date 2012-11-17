@@ -1,4 +1,4 @@
-from canwest import CanwestBaseChannel
+from canwest import *
 
 class HistoryTV(CanwestBaseChannel):
     short_name = 'history'

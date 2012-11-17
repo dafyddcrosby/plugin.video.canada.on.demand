@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from bellmedia import *
 
 class CTVNews(BellMediaBaseChannel):
     base_url = 'http://www.ctvnews.ca/video'

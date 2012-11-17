@@ -1,4 +1,4 @@
-from canwest import CanwestBaseChannel
+from canwest import *
 
 class HGTV(CanwestBaseChannel):
     short_name = 'hgtv'

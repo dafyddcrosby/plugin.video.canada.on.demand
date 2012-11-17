@@ -1,4 +1,4 @@
-from theplatform import ThePlatformBaseChannel
+from theplatform import *
 
 class TouTV(ThePlatformBaseChannel):
     long_name = 'Tou.TV'

@@ -1,4 +1,4 @@
-from canwest import CanwestBaseChannel
+from canwest import *
 
 class GlobalTV(CanwestBaseChannel):
     short_name = 'global'

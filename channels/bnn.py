@@ -1,4 +1,4 @@
-from ctv import BellMediaBaseChannel
+from bellmedia import *
 
 class BNN(BellMediaBaseChannel):
     base_url = 'http://watch.bnn.ca/AJAX/'
